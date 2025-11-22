@@ -2,6 +2,7 @@
 
 import TripCard from "./TripCard";
 interface Trip {
+    id:number;
     title: string;
     time: string;
     seats: number;

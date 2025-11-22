@@ -3,30 +3,37 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function TripCard(props: { id: any; title: any; time: any; seats: any; date: any; price: any; oldPrice: any; reviews: any; image: any; isPopular: any; isOffer: any; }) {
-  const {
-    id,
-    title,
-    time,
-    seats,
-    date,
-    price,
-    oldPrice,
-    reviews,
-    image,
-    isPopular,
-    isOffer,
-  } = props;
+interface TripCardProps {
+  id: number;
+  title: string;
+  time: string;
+  seats: number;
+  date: string;
+  price: number;
+  oldPrice?: number;
+  reviews: number;
+  image: string;
+  isPopular?: boolean;
+  isOffer?: boolean;
+}
 
+export default function TripCard({
+  id,
+  title,
+  time,
+  seats,
+  date,
+  price,
+  oldPrice,
+  reviews,
+  image,
+  isPopular,
+  isOffer,
+}: TripCardProps) {
   const router = useRouter();
-
-  const handleBookNow = () => {
-    router.push(`/bookings/${id}`);
-  };
 
   return (
     <div className="trip-card">
-
       <div className="trip-img-wrapper">
         <Image src={image} alt={title} fill className="trip-img" />
 
@@ -52,11 +59,13 @@ export default function TripCard(props: { id: any; title: any; time: any; seats:
           <div className="price">${price}</div>
           {oldPrice && <del className="old-price">${oldPrice}</del>}
 
-          <button onClick={handleBookNow} className="book-btn">
+          <button
+            onClick={() => router.push(`/bookings/${id}`)}
+            className="book-btn"
+          >
             Book Now
           </button>
         </div>
-
       </div>
     </div>
   );
