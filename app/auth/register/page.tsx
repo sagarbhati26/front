@@ -2,17 +2,60 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { apiRequest } from "@/utils/api";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
+    role: "user", 
     password: "",
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    if (form.password !== form.confirmPassword) {
+      setErrorMsg("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const data = await apiRequest("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          role: form.role,
+          password: form.password,
+        }),
+      });
+
+      setSuccessMsg("Account created successfully!");
+      setTimeout(() => router.push("/auth/login"), 1000);
+
+    } catch (err: any) {
+      setErrorMsg(err.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,25 +67,35 @@ export default function RegisterPage() {
           p-10
         "
       >
-       
+        
         <div className="w-full flex justify-center mb-6">
           <div className="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-3xl">
             😺
           </div>
         </div>
 
-        
         <h2 className="text-center text-[22px] font-semibold text-slate-900">
           Create Your Account
         </h2>
-        <p className="text-center text-slate-500 mt-1 mb-8">
+        <p className="text-center text-slate-500 mt-1 mb-6">
           Join us today and get started
         </p>
 
-      
-        <div className="flex flex-col gap-5">
+        
+        {errorMsg && (
+          <p className="text-red-600 text-center text-sm mb-3">{errorMsg}</p>
+        )}
 
-         
+       
+        {successMsg && (
+          <p className="text-green-600 text-center text-sm mb-3">
+            {successMsg}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
+          
           <div>
             <label className="text-sm font-medium text-slate-700">Full Name</label>
             <input
@@ -51,11 +104,12 @@ export default function RegisterPage() {
               value={form.name}
               onChange={handleChange}
               placeholder="John Doe"
-              className="w-full mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full text-black mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
-          
+         
           <div>
             <label className="text-sm font-medium text-slate-700">Email</label>
             <input
@@ -63,12 +117,27 @@ export default function RegisterPage() {
               name="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="john.doe@example.com"
-              className="w-full mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="john@example.com"
+              className="w-full mt-1 text-black px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
-     
+          
+          <div>
+            <label className="text-sm font-medium text-slate-700">Role</label>
+            <select
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              className="w-full text-black mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+         
           <div>
             <label className="text-sm font-medium text-slate-700">Password</label>
             <input
@@ -77,33 +146,42 @@ export default function RegisterPage() {
               value={form.password}
               onChange={handleChange}
               placeholder="Choose a strong password"
-              className="w-full mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full text-black mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
-            <p className="text-[11px] text-slate-400 mt-1">
-              Password must be at least 8 characters long
-            </p>
           </div>
 
-         
+          
           <div>
-            <label className="text-sm font-medium text-slate-700">Confirm Password</label>
+            <label className="text-sm font-medium text-slate-700">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
               value={form.confirmPassword}
               onChange={handleChange}
               placeholder="Re-enter your password"
-              className="w-full mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full text-black mt-1 px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
-        
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl mt-4 transition-all">
-            Sign Up
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className={`
+              w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl mt-3 
+              transition-all font-medium
+              ${loading ? "opacity-60 cursor-not-allowed" : ""}
+            `}
+          >
+            {loading ? "Creating account..." : "Sign Up"}
           </button>
-        </div>
+        </form>
 
-       
+        
         <p className="text-center text-sm text-slate-600 mt-6">
           Already have an account?{" "}
           <Link href="/auth/login" className="text-blue-600 font-medium">

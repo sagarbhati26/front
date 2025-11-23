@@ -3,28 +3,53 @@
 import { useState } from "react";
 import { FiMail, FiLock } from "react-icons/fi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { apiRequest } from "@/utils/api"; 
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: any) => {
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log({ email, password });
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      const data = await apiRequest("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+
+  
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      router.push("/home");
+
+    } catch (err: any) {
+      setErrorMsg(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F1F5F9]">
       <div className="w-[486px] h-auto bg-white rounded-2xl border border-[#E5E7EB] shadow-lg p-10">
-        
-        
+
+ 
         <div className="flex justify-center mb-4">
           <div className="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl">
             ✈️
           </div>
         </div>
 
-        
         <h1 className="text-center text-[22px] font-semibold text-slate-900">
           Log In to Journey Booking Platform
         </h1>
@@ -32,7 +57,12 @@ export default function LoginPage() {
           Welcome back! Please enter your credentials to continue.
         </p>
 
-        
+      
+        {errorMsg && (
+          <p className="text-red-600 text-center mb-3 text-sm">{errorMsg}</p>
+        )}
+
+  
         <form onSubmit={handleSubmit} className="space-y-5">
 
       
@@ -71,12 +101,15 @@ export default function LoginPage() {
             </p>
           </div>
 
-        
+         
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-sm font-semibold transition"
+            disabled={loading}
+            className={`w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-sm font-semibold transition
+            ${loading ? "opacity-70 cursor-not-allowed" : ""}
+            `}
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
 
