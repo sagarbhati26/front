@@ -20,7 +20,7 @@ interface Trip {
   }
   export default function TripsSection({ trips }: TripsSectionProps) {
   return (
-    <section className="trips-section">
+    <section className="text-black trips-section">
       <h2 className="available-title">Available Trips</h2>
       <p className="available-subtitle">
         Choose from our carefully selected destinations and enjoy a comfortable journey.

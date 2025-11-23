@@ -22,10 +22,12 @@ type Trip = {
      export default function TripTable({
              onAddTrip,
              onEditTrip,
+             onSuccess,
              reload,
            }: {
              onAddTrip?: () => void;
              onEditTrip?: (trip: any) => void;
+             onSuccess?: () => void;
              reload?: number;
            }){
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -40,6 +42,18 @@ type Trip = {
       console.log(e);
     }
     setLoading(false);
+  };
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this trip?")) return;
+  
+    try {
+      await apiRequest(`/trips/${id}`, { method: "DELETE" });
+  
+      if (onSuccess) onSuccess();   
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete trip.");
+    }
   };
 
   useEffect(() => {
@@ -106,7 +120,8 @@ type Trip = {
                         size={18}
                         onClick={() => onEditTrip && onEditTrip(t)}
                       />
-                      <FiTrash2 className="text-red-500 cursor-pointer" size={18} />
+                      <FiTrash2 className="text-red-500 cursor-pointer" size={18}
+                      onClick={() => handleDelete(t._id)}/>
                     </div>
                   </td>
                 </tr>

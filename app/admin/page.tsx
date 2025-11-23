@@ -40,6 +40,7 @@ export default function AdminPage() {
           reload={reloadTrips}
           onAddTrip={handleAddTrip}
           onEditTrip={handleEditTrip}
+          onSuccess={handleSuccess}
         />
 
         <BookingTable />
