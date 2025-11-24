@@ -2,9 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
+  const pathname = usePathname();
+  const linkClass = (path: string) =>
+    pathname.startsWith(path) ? "text-blue-600 font-medium" : "text-gray-700 hover:text-blue-600";
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -29,18 +33,18 @@ export default function Navbar() {
 
       <div className="flex items-center gap-8 text-[16px]">
 
-        <Link href="/home" className="text-blue-600 font-medium">
+        <Link href="/home" className={linkClass("/home")}>
           Home
         </Link>
 
      
         {user && (
           <>
-            <Link href="/bookings" className="text-gray-700 hover:text-blue-600">
+            <Link href="/bookings" className={linkClass("/bookings")}>
               My Bookings
             </Link>
 
-            <Link href="/profile" className="text-gray-700 hover:text-blue-600">
+            <Link href="/profile" className={linkClass("/profile")}>
               Profile
             </Link>
           </>
@@ -48,7 +52,7 @@ export default function Navbar() {
 
       
         {user?.role === "admin" && (
-          <Link href="/admin" className="text-gray-700 hover:text-blue-600 font-semibold">
+          <Link href="/admin" className={`${linkClass("/admin")} font-semibold`}>
             Admin
           </Link>
         )}

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import { apiRequest } from "@/utils/api";
 import DownloadToast from "@/components/DownloadToast";
 
 export default function TicketPage() {
@@ -17,6 +18,28 @@ export default function TicketPage() {
   );
 
   const [showToast, setShowToast] = useState(false);
+  const [trip, setTrip] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const t = await apiRequest(`/trips/${id}`, { method: "GET" });
+        setTrip(t);
+      } catch (_) {}
+
+      try {
+        const p = await apiRequest(`/auth/profile`, { method: "GET" });
+        setUser(p.user);
+      } catch (_) {
+        try {
+          const u = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+          if (u) setUser(JSON.parse(u));
+        } catch (_) {}
+      }
+    };
+    load();
+  }, [id]);
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -33,10 +56,10 @@ export default function TicketPage() {
         <div className="flex items-start justify-between mb-10">
           <div>
             <h1 className="text-[28px] font-semibold text-slate-900">
-              Emirates A380 Airbus
+              {trip ? `${trip.from} → ${trip.to}` : "Trip Ticket"}
             </h1>
             <p className="text-sm text-slate-600 mt-1">
-              Gümüssuyu Mah. İnönü Cad. No:8, Istanbul 34437
+              {trip?.code ? `Code: ${trip.code}` : ""}
             </p>
           </div>
 
@@ -69,15 +92,15 @@ export default function TicketPage() {
                 background: "#F8FBFF",
               }}
             >
-              <div className="text-[28px] text-black font-semibold">9:30 AM</div>
-              <div className="text-xs text-slate-500 mb-6">New York</div>
+              <div className="text-[28px] text-black font-semibold">{trip?.departTime || "--"}</div>
+              <div className="text-xs text-slate-500 mb-6">{trip?.from || ""}</div>
 
               <div className="my-2">
                 <img src="/globe.png" alt="plane-icon" className="w-8 opacity-50" />
               </div>
 
-              <div className="text-[28px] text-black font-semibold mt-6">12:00 PM</div>
-              <div className="text-xs text-slate-500">Boston</div>
+              <div className="text-[28px] text-black font-semibold mt-6">{trip?.arriveTime || "--"}</div>
+              <div className="text-xs text-slate-500">{trip?.to || ""}</div>
             </div>
 
            
@@ -98,8 +121,8 @@ export default function TicketPage() {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
-                    <p className="font-semibold text-slate-800">James Doe</p>
-                    <p className="text-sm text-slate-500">Boarding Pass N°123</p>
+                    <p className="font-semibold text-slate-800">{user?.name || "Guest"}</p>
+                    <p className="text-sm text-slate-500">Ref {bookingRef}</p>
                   </div>
                 </div>
 
@@ -117,7 +140,7 @@ export default function TicketPage() {
                   </div>
                   <div>
                     <p className="text-xs text-slate-400">Date</p>
-                    <p className="text-black font-medium">26 Oct 2024</p>
+                    <p className="text-black font-medium">{trip?.rawDateTime || (trip?.date ? new Date(trip.date).toISOString().slice(0,10) : "—")}</p>
                   </div>
                 </div>
 
@@ -128,7 +151,7 @@ export default function TicketPage() {
                   </div>
                   <div>
                     <p className="text-xs text-slate-400">Duration</p>
-                    <p className="text-black font-medium">2h 30m</p>
+                    <p className="text-black font-medium">{`${trip?.departTime || ""} - ${trip?.arriveTime || ""}`}</p>
                   </div>
                 </div>
 
@@ -158,8 +181,8 @@ export default function TicketPage() {
           
               <div className="flex justify-between items-center mt-6">
                 <div>
-                  <p className="text-[26px] text-black font-bold">EK</p>
-                  <p className="text-sm text-slate-400">ABC12345</p>
+                  <p className="text-[26px] text-black font-bold">{trip?.code || "Ticket"}</p>
+                  <p className="text-sm text-slate-400">{bookingRef}</p>
                 </div>
 
                 <img

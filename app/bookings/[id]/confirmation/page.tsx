@@ -12,20 +12,34 @@ export default function BookingConfirmationPage() {
   const seats = params.get("seats")?.split(",") ?? [];
   const total = Number(params.get("total") ?? "0");
 
+  const { id } = useParams();
   const [booking, setBooking] = useState<any>(null);
+  const [trip, setTrip] = useState<any>(null);
 
   useEffect(() => {
     const load = async () => {
       if (!bookingId) return;
       try {
-        const data = await apiRequest(`/bookings/${bookingId}`, { method: "GET" });
+        const data = await apiRequest(`/booking/${bookingId}`, { method: "GET" });
         setBooking(data);
+        if (!data?.trip && id) {
+          const t = await apiRequest(`/trips/${id}`, { method: "GET" });
+          setTrip(t);
+        }
       } catch (err) {
         console.log(err);
+        if (id) {
+          try {
+            const t = await apiRequest(`/trips/${id}`, { method: "GET" });
+            setTrip(t);
+          } catch (_) {}
+        }
       }
     };
     load();
   }, [bookingId]);
+
+  const tripData = booking?.trip || trip;
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -56,7 +70,7 @@ export default function BookingConfirmationPage() {
           <div className="grid grid-cols-3 gap-4 items-center">
             <div className="text-center">
               <div className="text-sm text-gray-500">FROM</div>
-              <div className="text-[18px] font-semibold mt-1">{booking?.trip?.from ?? "—"}</div>
+              <div className="text-[18px]  text-black font-semibold mt-1">{tripData?.from ?? "—"}</div>
               <div className="text-xs text-gray-400 mt-2">Departs</div>
             </div>
 
@@ -67,7 +81,7 @@ export default function BookingConfirmationPage() {
 
             <div className="text-center">
               <div className="text-sm text-gray-500">TO</div>
-              <div className="text-[18px] font-semibold mt-1">{booking?.trip?.to ?? "—"}</div>
+              <div className="text-[18px] text-black font-semibold mt-1">{tripData?.to ?? "—"}</div>
               <div className="text-xs text-gray-400 mt-2">Arrives</div>
             </div>
           </div>
@@ -75,7 +89,7 @@ export default function BookingConfirmationPage() {
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div className="bg-[#F8FAFC] rounded-md p-3 text-sm text-gray-700">
               <div className="text-xs text-gray-400">Date</div>
-              <div className="font-medium">{booking?.trip?.rawDateTime ?? "—"}</div>
+              <div className="font-medium">{tripData?.rawDateTime ?? "—"}</div>
             </div>
 
             <div className="bg-[#F8FAFC] rounded-md p-3 text-sm text-gray-700">
