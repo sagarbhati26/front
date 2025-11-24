@@ -12,9 +12,9 @@ export default function OverviewCards({ reload }: { reload?: number }) {
     try {
       const trips = await apiRequest("/trips", { method: "GET" });
       let bookings = [];
-      try { bookings = await apiRequest("/booking", { method: "GET" }); } catch(e){}
+      try { bookings = await apiRequest("/booking", { method: "GET" }); } catch (e) { }
 
-      const upcoming = trips.filter((t:any) =>
+      const upcoming = trips.filter((t: any) =>
         t.date ? new Date(t.date) > new Date() : false
       ).length;
 
@@ -34,8 +34,8 @@ export default function OverviewCards({ reload }: { reload?: number }) {
 
   const cards = [
     { id: 1, value: counts.trips, label: "Total Trips", iconBg: "#EEF2FF", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M2 12h20" /></svg>) },
-    { id: 2, value: counts.bookings, label: "Total Bookings", iconBg: "#ECFDF5", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 11h18v10H3z"/></svg>) },
-    { id: 3, value: counts.upcoming, label: "Upcoming Departures", iconBg: "#FEF3C7", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16v16H4z"/><path d="M9 8h6v8H9z"/></svg>) },
+    { id: 2, value: counts.bookings, label: "Total Bookings", iconBg: "#ECFDF5", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h18v4H3z" /><path d="M3 11h18v10H3z" /></svg>) },
+    { id: 3, value: counts.upcoming, label: "Upcoming Departures", iconBg: "#FEF3C7", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16v16H4z" /><path d="M9 8h6v8H9z" /></svg>) },
   ];
 
   return (

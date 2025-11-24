@@ -311,7 +311,7 @@ export default function CheckoutPage() {
       
           <div>
             <div className="bg-white rounded-xl border p-6 shadow-sm">
-              <div className="w-full h-[90px] rounded-lg bg-gradient-to-r from-[#0A1F44] to-[#122B64] flex items-center justify-center">
+              <div className="w-full h-[90px] rounded-lg bg-linear-to-r from-[#0A1F44] to-[#122B64] flex items-center justify-center">
                 <span className="text-white text-2xl">✈️</span>
               </div>
 

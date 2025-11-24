@@ -120,7 +120,7 @@ export default function HomePage() {
   
     const data = await apiRequest(`/trips?${query.toString()}`);
     
-    const formatted = data.map((t) => ({
+    const formatted = data.map((t:any) => ({
       id: t._id,
       title: `${t.from} → ${t.to}`,
       time: `${t.departTime || ""} - ${t.arriveTime || ""}`,
@@ -138,17 +138,17 @@ export default function HomePage() {
     try {
       const data = await apiRequest("/trips", { method: "GET" });
       
-      // convert backend → UI format
-      const formatted = data.map((t) => ({
+      
+      const formatted = data.map((t:any) => ({
         id: t._id,
         title: `${t.from} → ${t.to}`,
         time: `${t.departTime || ""} - ${t.arriveTime || ""}`,
         seats: t.totalSeats,
         date: t.rawDateTime || "",
         price: t.price,
-        oldPrice: null,          // optional discount
-        reviews: 120,            // static for now
-         image: "/atm.png",       // static image (will improve later)
+        oldPrice: null,
+        reviews: 120,            
+         image: "/atm.png",       
         isPopular: false,
         isOffer: false,
       }));

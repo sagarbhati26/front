@@ -45,7 +45,7 @@ export default function BookingConfirmationPage() {
           <p className="text-sm text-gray-500 mt-1">Your trip is successfully booked.</p>
         </div>
 
-        <div className="mt-6 bg-gradient-to-r from-[#2B63D8] to-[#4A7CF6] text-white px-4 py-3 rounded-t-lg">
+        <div className="mt-6 bg-linear-to-r from-[#2B63D8] to-[#4A7CF6] text-white px-4 py-3 rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Flight Ticket</div>
             <div className="text-xs opacity-80">Booking ID: {bookingId}</div>

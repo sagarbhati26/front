@@ -32,14 +32,18 @@ export default function MyBookingsPage() {
 
   const today = new Date();
 
-  const upcoming = bookings.filter(b => {
-    if (!b.trip?.date) return false;
-    return new Date(b.trip.date) >= today;
+  const upcoming = bookings.filter((b) => {
+    const dateVal = b.trip?.date || b.trip?.rawDateTime;
+    if (!dateVal) return false;
+    const tripDate = new Date(dateVal);
+    return Number.isFinite(tripDate.getTime()) && tripDate >= today;
   });
 
-  const past = bookings.filter(b => {
-    if (!b.trip?.date) return false;
-    return new Date(b.trip.date) < today;
+  const past = bookings.filter((b) => {
+    const dateVal = b.trip?.date || b.trip?.rawDateTime;
+    if (!dateVal) return false;
+    const tripDate = new Date(dateVal);
+    return Number.isFinite(tripDate.getTime()) && tripDate < today;
   });
 
   return (

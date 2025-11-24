@@ -1,8 +1,25 @@
 "use client";
 
 import { FiEdit2, FiPlus } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { apiRequest } from "@/utils/api";
 
 export default function ProfileEditForm() {
+  const [user, setUser] = useState<any>(null);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await apiRequest("/auth/profile", { method: "GET" });
+        setUser(data.user);
+      } catch (_) {
+        try {
+          const u = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+          if (u) setUser(JSON.parse(u));
+        } catch (_) {}
+      }
+    };
+    load();
+  }, []);
   return (
     <div className="w-full max-w-[1232px] mx-auto flex flex-col gap-10">
 
@@ -13,9 +30,9 @@ export default function ProfileEditForm() {
 
         <div className="text-center">
           <h2 className="text-[22px] font-semibold text-slate-900">
-            Alex Johnson
+            {user?.name || "User"}
           </h2>
-          <p className="text-slate-500 text-sm">alex.johnson@email.com</p>
+          <p className="text-slate-500 text-sm">{user?.email || ""}</p>
         </div>
       </div>
 
@@ -27,7 +44,7 @@ export default function ProfileEditForm() {
         <div className="flex justify-between items-start">
           <div>
             <label className="text-sm text-slate-500">Name</label>
-            <p className="text-[16px] text-slate-800 font-medium">Alex Johnson</p>
+            <p className="text-[16px] text-slate-800 font-medium">{user?.name || ""}</p>
           </div>
           <button className="px-4 py-1 rounded-lg border border-blue-500 text-blue-600 flex items-center gap-2 text-sm">
             <FiEdit2 size={14} /> Change
@@ -39,7 +56,7 @@ export default function ProfileEditForm() {
           <div>
             <label className="text-sm text-slate-500">Email</label>
             <p className="text-[16px] text-slate-800 font-medium">
-              john.doe@gmail.com
+              {user?.email || ""}
             </p>
           </div>
 
