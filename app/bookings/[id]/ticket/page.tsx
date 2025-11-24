@@ -77,20 +77,13 @@ export default function TicketPage() {
           </div>
         </div>
         <div
-          className="bg-white rounded-2xl shadow-lg border border-[#EAEAEA] overflow-hidden"
-          style={{ width: "1232px" }}
+          className="bg-white rounded-2xl shadow-lg border border-[#EAEAEA] overflow-hidden w-full max-w-[1232px]"
         >
           <div className="flex">
 
       
             <div
-              className="flex flex-col items-center justify-center"
-              style={{
-                width: "300px",
-                height: "309px",
-                borderRight: "1px solid #EAEAEA",
-                background: "#F8FBFF",
-              }}
+              className="flex flex-col items-center justify-center w-full lg:w-[300px] lg:border-r border-[#EAEAEA] bg-[#F8FBFF]"
             >
               <div className="text-[28px] text-black font-semibold">{trip?.departTime || "--"}</div>
               <div className="text-xs text-slate-500 mb-6">{trip?.from || ""}</div>
@@ -105,12 +98,7 @@ export default function TicketPage() {
 
            
             <div
-              className="p-6"
-              style={{
-                width: "856px",
-                height: "309px",
-                borderRight: "1px solid #EAEAEA",
-              }}
+              className="p-6 w-full lg:w-[856px] lg:border-r border-[#EAEAEA]"
             >
            
               <div className="flex justify-between items-center">

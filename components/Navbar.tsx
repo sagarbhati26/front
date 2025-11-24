@@ -9,6 +9,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const linkClass = (path: string) =>
     pathname.startsWith(path) ? "text-blue-600 font-medium" : "text-gray-700 hover:text-blue-600";
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -20,7 +21,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="w-full bg-white border-b border-[#E5E7EB] py-4 px-10 flex items-center justify-between">
+    <nav className="w-full bg-white border-b border-[#E5E7EB] py-4 px-4 md:px-10 flex items-center justify-between flex-wrap gap-3">
       
   
       <div className="flex items-center gap-3">
@@ -31,7 +32,7 @@ export default function Navbar() {
       </div>
 
 
-      <div className="flex items-center gap-8 text-[16px]">
+      <div className="hidden md:flex items-center flex-wrap gap-4 md:gap-8 text-[16px]">
 
         <Link href="/home" className={linkClass("/home")}>
           Home
@@ -77,7 +78,26 @@ export default function Navbar() {
             Login
           </Link>
         )}
+        <button className="md:hidden px-3 text-black py-2 border rounded" onClick={() => setMenuOpen(!menuOpen)}>Menu</button>
       </div>
+
+      {menuOpen && (
+        <div className="w-full md:hidden px-4 pb-3 flex flex-col gap-3">
+          <Link href="/home" className={linkClass("/home")} onClick={() => setMenuOpen(false)}>Home</Link>
+          {user && (
+            <>
+              <Link href="/bookings" className={linkClass("/bookings")} onClick={() => setMenuOpen(false)}>My Bookings</Link>
+              <Link href="/profile" className={linkClass("/profile")} onClick={() => setMenuOpen(false)}>Profile</Link>
+            </>
+          )}
+          {user?.role === "admin" && (
+            <Link href="/admin" className={`${linkClass("/admin")} font-semibold`} onClick={() => setMenuOpen(false)}>Admin</Link>
+          )}
+          {!user && (
+            <Link href="/auth/login" className="text-blue-600 font-semibold" onClick={() => setMenuOpen(false)}>Login</Link>
+          )}
+        </div>
+      )}
 
     </nav>
   );

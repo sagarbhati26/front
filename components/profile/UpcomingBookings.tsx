@@ -13,7 +13,7 @@ export default function UpcomingBookings({ bookings }: any) {
         <p className="text-gray-500 text-sm">No upcoming trips.</p>
       )}
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {list.map((b: any) => (
           <BookingCard
             key={b._id}

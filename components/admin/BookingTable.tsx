@@ -23,8 +23,8 @@ export default function BookingTable() {
         </div>
       </div>
 
-      <div className="bg-white border border-[#E5E7EB] rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-left">
+      <div className="bg-white border border-[#E5E7EB] rounded-xl shadow-sm overflow-x-auto">
+        <table className="w-full min-w-[800px] text-left">
           <thead className="bg-[#F9FAFB] text-sm text-slate-600">
             <tr>
               <th className="py-3 px-6">Booking ID</th>

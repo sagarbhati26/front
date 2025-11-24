@@ -78,8 +78,8 @@ type Trip = {
         </div>
       </div>
 
-      <div className="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
-        <table className="w-full text-left">
+      <div className="border border-[#E5E7EB] rounded-xl bg-white overflow-x-auto">
+        <table className="w-full min-w-[800px] text-left">
           <thead className="bg-[#F9FAFB] text-sm text-slate-600">
             <tr>
               <th className="py-3 px-6">ID</th>
